@@ -83,21 +83,24 @@ sparql.setQuery("""
 sparql.setReturnFormat(JSON)
 results = sparql.query().convert()
 
+def get_value_of_key(dictionary, key, value):
+    if dictionary.get(key, False):
+        return unicode(dictionary[key][value])
+    else:
+        return Colors.BLUE + Colors.BOLD + 'No value found in dbpedia' + Colors.NOCOLOR
+
 for result in results['results']['bindings']:
     name = unicode(result['name']['value'])
-    label = unicode(result['label']['value'])
-    comment = unicode(result['comment']['value'])
+
+    label = get_value_of_key(result, 'label', 'value')
+    comment = get_value_of_key(result, 'comment', 'value')
+
     latitude = str(result['lat']['value'])
     longitude = str(result['long']['value'])
 
     print '\n'
-    print Colors.GREEN + Colors.BOLD + 'Name' + Colors.NOCOLOR,
-    print name
-    print Colors.GREEN + Colors.BOLD + 'Label' + Colors.NOCOLOR,
-    print label
-    print Colors.GREEN + Colors.BOLD + 'Comment' + Colors.NOCOLOR,
-    print comment
-    print Colors.GREEN + Colors.BOLD + 'Latitude' + Colors.NOCOLOR,
-    print latitude
-    print Colors.GREEN + Colors.BOLD + 'longitude' + Colors.NOCOLOR,
-    print longitude + '\n'
+    print Colors.GREEN + Colors.BOLD + 'Name' + Colors.NOCOLOR, name
+    print Colors.GREEN + Colors.BOLD + 'Label' + Colors.NOCOLOR, label
+    print Colors.GREEN + Colors.BOLD + 'Comment' + Colors.NOCOLOR, comment
+    print Colors.GREEN + Colors.BOLD + 'Latitude' + Colors.NOCOLOR, latitude
+    print Colors.GREEN + Colors.BOLD + 'longitude' + Colors.NOCOLOR, longitude + '\n'
