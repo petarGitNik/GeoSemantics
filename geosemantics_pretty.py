@@ -35,10 +35,17 @@ latitude = float(argv[1])
 longitude = float(argv[2])
 tolerance = float(argv[3])
 
-# If there is no input value for language, default to English
-language = 'en'
+# If there is no input value for language, default to whatever dbpedia returns
+language = '*'
 if len(argv) == 5:
     language = argv[4]
+
+def set_language_filters(language):
+    if language == '*':
+        return ['', '']
+    filter_lang_label = "filter(lang(?label) = \'" + language + "\')\n"
+    filter_lang_comment = "filter(lang(?comment) = \'" + language + "\')\n"
+    return [filter_lang_label, filter_lang_comment]
 
 # Colors for pretty colored output
 class Colors(object):
@@ -59,25 +66,30 @@ right = longitude + tolerance
 # Prepare filters
 filter_latitude = "?lat > " + str(bottom) + " && ?lat < " + str(top)
 filter_longitude = "?long > " + str(left) + " && ?long < " + str(right)
-filter_lang_label = "filter(lang(?label) = \'" + language + "\')\n"
-filter_lang_comment = "filter(lang(?comment) = \'" + language + "\')\n"
+
+filter_lang_label, filter_lang_comment = set_language_filters(language)
 
 sparql.setQuery("""
+    PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
     SELECT DISTINCT
-    ?name ?lat ?long ?label ?comment
+    ?name ?lat ?long (MIN(?label) AS ?label) (MIN(?comment) AS ?comment)
     WHERE {
-        ?name rdf:type <http://dbpedia.org/class/yago/Company108058098>.
-        ?name <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat.
-        ?name <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long.
+        ?name  rdf:type   <http://dbpedia.org/class/yago/Company108058098>.
+        ?name  geo:lat ?lat.
+        ?name  geo:long ?long.
 
         filter(""" + filter_latitude + """ && """ + filter_longitude + """)
-        OPTIONAL {
-                ?name <http://www.w3.org/2000/01/rdf-schema#label> ?label.
-                ?name <http://www.w3.org/2000/01/rdf-schema#comment> ?comment.
+	    OPTIONAL {
+        ?name rdfs:label ?label.
+	    ?name rdfs:comment ?comment.
 
-                """ + filter_lang_label + filter_lang_comment + """
+        """ + filter_lang_label + filter_lang_comment + """
         }
-    } LIMIT 20
+    } GROUP BY ?name ?lat ?long
+    LIMIT 20
 """)
 
 sparql.setReturnFormat(JSON)
