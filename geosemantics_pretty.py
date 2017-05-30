@@ -5,7 +5,7 @@ from sys import argv
 from sys import exit
 
 """
-geosemantics [latitude] [longitude] [tolerance] [language]
+geosemantics latitude longitude tolerance [language]
 """
 
 # If there are too many arguments - exit
@@ -36,12 +36,13 @@ longitude = float(argv[2])
 tolerance = float(argv[3])
 
 # If there is no input value for language, default to whatever dbpedia returns
-language = '*'
+language = 'default'
 if len(argv) == 5:
     language = argv[4]
 
+# If default value for language is used, then do not use language filters
 def set_language_filters(language):
-    if language == '*':
+    if language == 'default':
         return ['', '']
     filter_lang_label = "filter(lang(?label) = \'" + language + "\')\n"
     filter_lang_comment = "filter(lang(?comment) = \'" + language + "\')\n"
@@ -73,22 +74,24 @@ sparql.setQuery("""
     PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX yago: <http://dbpedia.org/class/yago/>
 
     SELECT DISTINCT
     ?name ?lat ?long (MIN(?label) AS ?label) (MIN(?comment) AS ?comment)
     WHERE {
-        ?name  rdf:type   <http://dbpedia.org/class/yago/Company108058098>.
-        ?name  geo:lat ?lat.
-        ?name  geo:long ?long.
+        ?name rdf:type yago:Company108058098.
+        ?name geo:lat ?lat.
+        ?name geo:long ?long.
 
         filter(""" + filter_latitude + """ && """ + filter_longitude + """)
-	    OPTIONAL {
+        OPTIONAL {
         ?name rdfs:label ?label.
-	    ?name rdfs:comment ?comment.
+        ?name rdfs:comment ?comment.
 
         """ + filter_lang_label + filter_lang_comment + """
         }
-    } GROUP BY ?name ?lat ?long
+    }
+    GROUP BY ?name ?lat ?long
     LIMIT 20
 """)
 
