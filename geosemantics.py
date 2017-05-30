@@ -9,7 +9,7 @@ geosemantics latitude longitude tolerance [language]
 """
 
 # If there are too many arguments - exit
-if len(argv) > 6:
+if len(argv) >= 6:
     print "Too many arguments."
     exit(0)
 
