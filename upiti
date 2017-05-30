@@ -1,0 +1,302 @@
+    SELECT DISTINCT
+    ?name ?lat ?long ?label ?comment
+    WHERE{
+        ?name  rdf:type   <http://dbpedia.org/class/yago/Company108058098>.
+        ?name  <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat.
+        ?name  <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long.
+        ?name <http://www.w3.org/2000/01/rdf-schema#label> ?label.
+        ?name <http://www.w3.org/2000/01/rdf-schema#comment> ?comment.
+        filter(?lat > -25 && ?lat < 25 && ?long > -25 && ?long < 25)
+        filter(lang(?label) = 'en')
+        filter(lang(?comment) = 'en')
+    } LIMIT 20
+
+===========================================================================
+
+    SELECT DISTINCT
+    ?name ?lat ?long
+    WHERE{
+        ?name  rdf:type   <http://dbpedia.org/class/yago/Company108058098>.
+        ?name  <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat.
+        ?name  <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long.
+        ?name <http://www.w3.org/2000/01/rdf-schema#label> ?label.
+        ?name <http://www.w3.org/2000/01/rdf-schema#comment> ?comment.
+        filter(?lat > -25 && ?lat < 25 && ?long > -25 && ?long < 25)
+    } LIMIT 20
+
+===========================================================================
+
+    SELECT DISTINCT
+    ?name ?lat ?long
+    WHERE{
+        ?name  rdf:type   <http://dbpedia.org/class/yago/Company108058098>.
+        ?name  <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat.
+        ?name  <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long.
+        ?name <http://www.w3.org/2000/01/rdf-schema#label> ?label.
+        ?name <http://www.w3.org/2000/01/rdf-schema#comment> ?comment.
+        filter(?lat > -25 && ?lat < 25 && ?long > -25 && ?long < 25)
+        filter(lang(?name) = 'en')
+    } LIMIT 20
+
+===========================================================================
+
+    SELECT DISTINCT
+    ?name ?lat ?long ?label ?comment
+    WHERE{
+        ?name  rdf:type   <http://dbpedia.org/class/yago/Company108058098>.
+        ?name  <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat.
+        ?name  <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long.
+        filter(?lat > -25 && ?lat < 25 && ?long > -25 && ?long < 25)
+OPTIONAL {
+        ?name <http://www.w3.org/2000/01/rdf-schema#label> ?label.
+        ?name <http://www.w3.org/2000/01/rdf-schema#comment> ?comment.
+
+        filter(lang(?label) = 'en')
+        filter(lang(?comment) = 'en')
+}
+    } LIMIT 20
+
+===========================================================================
+
+    SELECT DISTINCT
+    ?name ?lat ?long ?label ?comment
+    WHERE{
+        ?name  rdf:type   <http://dbpedia.org/class/yago/Company108058098>.
+        ?name  <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat.
+        ?name  <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long.
+        ?name <http://www.w3.org/2000/01/rdf-schema#label> ?label.
+        ?name <http://www.w3.org/2000/01/rdf-schema#comment> ?comment.
+        filter(""" + filter_latitude + """ && """ + filter_longitude + """)
+        """ + filter_lang_label + filter_lang_comment + """
+    } LIMIT 20
+
+===========================================================================
+
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+    SELECT DISTINCT
+    ?name ?lat ?long ?label ?comment
+    WHERE{
+        ?name  rdf:type   <http://dbpedia.org/class/yago/Company108058098>.
+        ?name  geo:lat ?lat.
+        ?name  geo:long ?long.
+        filter(?lat > -25 && ?lat < 25 && ?long > -25 && ?long < 25)
+OPTIONAL {
+        ?name rdfs:label ?label.
+        ?name rdfs:comment ?comment.
+
+        filter(lang(?label) = 'en')
+        filter(lang(?comment) = 'en')
+}
+    } LIMIT 20
+
+===========================================================================
+
+NE RADI
+
+    SELECT DISTINCT
+    ?name ?lat ?long ?label ?comment
+    WHERE{
+        ?name  rdf:type   <http://dbpedia.org/class/yago/Company108058098>.
+        ?name  <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat.
+        ?name  <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long.
+        filter(?lat > -25 && ?lat < 25 && ?long > -25 && ?long < 25)
+OPTIONAL {
+SELECT ?label ?comment {
+        ?name rdfs:label ?label.
+        ?name rdfs:comment ?comment.
+} LIMIT 1
+} 
+    }
+LIMIT 20
+
+===========================================================================
+
+VRACA ONO STO TI TREBA, ALI LANG TAGs KOMENTARA I LABEL-A SE NE POKLAPAJU
+JEZICKI
+
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+    SELECT DISTINCT
+    ?name ?lat ?long SAMPLE(?label) SAMPLE(?comment)
+    WHERE{
+        ?name  rdf:type   <http://dbpedia.org/class/yago/Company108058098>.
+        ?name  geo:lat ?lat.
+        ?name  geo:long ?long.
+        filter(?lat > -25 && ?lat < 25 && ?long > -25 && ?long < 25)
+OPTIONAL { ?name rdfs:label ?label. }
+OPTIONAL { ?name rdfs:comment ?comment. }
+
+    } GROUP BY ?name ?lat ?long
+LIMIT 20
+
+===========================================================================
+
+OVO JE BOLJE NEGO PRETHODNO, ALI OPET NE GARANTUJE DA CE SE TAGOVI LABEL-A
+I KOMENTARA POKLAPATI
+
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+    SELECT DISTINCT
+    ?name ?lat ?long (MIN(?label) AS ?label) (MIN(?comment) AS ?comment)
+    WHERE{
+        ?name  rdf:type   <http://dbpedia.org/class/yago/Company108058098>.
+        ?name  geo:lat ?lat.
+        ?name  geo:long ?long.
+        filter(?lat > -25 && ?lat < 25 && ?long > -25 && ?long < 25)
+	OPTIONAL { ?name rdfs:label ?label. }
+	OPTIONAL { ?name rdfs:comment ?comment. }
+
+    } GROUP BY ?name ?lat ?long
+LIMIT 20
+
+SAMO IDEJA, mada ne pomaze
+        filter(lang(?label) = lang(?comment))
+
+===========================================================================
+
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+    SELECT DISTINCT
+    ?name ?lat ?long (MIN(?label) AS ?label) (MIN(?comment) AS ?comment)
+    WHERE{
+        ?name  rdf:type   <http://dbpedia.org/class/yago/Company108058098>.
+        ?name  geo:lat ?lat.
+        ?name  geo:long ?long.
+        filter(?lat > -25 && ?lat < 25 && ?long > -25 && ?long < 25)
+	OPTIONAL { ?name rdfs:label ?label. }
+	OPTIONAL { ?name rdfs:comment ?comment. }
+        filter(lang(?label) = 'ru')
+        filter(lang(?comment) = 'ru')
+    } GROUP BY ?name ?lat ?long
+LIMIT 20
+
+VS
+
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+    SELECT DISTINCT
+    ?name ?lat ?long (MIN(?label) AS ?label) (MIN(?comment) AS ?comment)
+    WHERE{
+        ?name  rdf:type   <http://dbpedia.org/class/yago/Company108058098>.
+        ?name  geo:lat ?lat.
+        ?name  geo:long ?long.
+        filter(?lat > -25 && ?lat < 25 && ?long > -25 && ?long < 25)
+	OPTIONAL { ?name rdfs:label ?label.
+	?name rdfs:comment ?comment.
+        filter(lang(?label) = 'ru')
+        filter(lang(?comment) = 'ru') }
+    } GROUP BY ?name ?lat ?long
+LIMIT 20
+
+===========================================================================
+
+OVO JE OK
+
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX yago: <http://dbpedia.org/class/yago/>
+
+    SELECT DISTINCT
+    ?name ?lat ?long (MIN(?label) AS ?label) (MIN(?comment) AS ?comment)
+    WHERE{
+        ?name  rdf:type   yago:Company108058098.
+        ?name  geo:lat ?lat.
+        ?name  geo:long ?long.
+        filter(?lat > -25 && ?lat < 25 && ?long > -25 && ?long < 25)
+	OPTIONAL { ?name rdfs:label ?label.
+	?name rdfs:comment ?comment.
+        filter(lang(?label) = 'ru')
+        filter(lang(?comment) = 'ru')}
+    } GROUP BY ?name ?lat ?long
+LIMIT 20
+
+===========================================================================
+
+UPOREDI OVAJ UPIT SA PRETHODNIM, RAZLIKA U ZAGRADI KOD FILTERA, TJ. PRE
+FILTERA ZA JEZIK
+
+AKO UKLONIM OPTIONAL I LANG FILTERE, ONDA NE MOGU DA DOBIJEM KOMPANIJE ZA
+KOJE NEMA LABEL I COMMENT U ODABRANOM JEZIKU
+
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX yago: <http://dbpedia.org/class/yago/>
+
+    SELECT DISTINCT
+    ?name ?lat ?long (MIN(?label) AS ?label) (MIN(?comment) AS ?comment)
+    WHERE{
+        ?name  rdf:type   yago:Company108058098.
+        ?name  geo:lat ?lat.
+        ?name  geo:long ?long.
+        filter(?lat > -25 && ?lat < 25 && ?long > -25 && ?long < 25)
+	OPTIONAL { ?name rdfs:label ?label.
+	?name rdfs:comment ?comment. }
+        filter(lang(?label) = 'ru')
+        filter(lang(?comment) = 'ru')
+    } GROUP BY ?name ?lat ?long
+LIMIT 20
+
+===========================================================================
+
+OVO KORISTI LANGMATCHES FILTER
+
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX yago: <http://dbpedia.org/class/yago/>
+
+    SELECT DISTINCT
+    ?name ?lat ?long (MIN(?label) AS ?label) (MIN(?comment) AS ?comment)
+    WHERE {
+        ?name  rdf:type   yago:Company108058098.
+        ?name  geo:lat ?lat.
+        ?name  geo:long ?long.
+        filter(?lat > -25 && ?lat < 25 && ?long > -25 && ?long < 25)
+	OPTIONAL { ?name rdfs:label ?label.
+	?name rdfs:comment ?comment.
+        filter(langMatches(lang(?label), 'en'))
+        filter(langMatches(lang(?comment), 'en')) }
+    } GROUP BY ?name ?lat ?long
+LIMIT 20
+
+===========================================================================
+
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX yago: <http://dbpedia.org/class/yago/>
+PREFIX dbr: <http://dbpedia.org/resource/>
+
+SELECT
+?label
+WHERE {
+dbr:Ferrari rdfs:label ?label.
+} ORDER BY DESC(?label)
+LIMIT 20
+
+===================================================================
+
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX yago: <http://dbpedia.org/class/yago/>
+PREFIX dbr: <http://dbpedia.org/resource/>
+
+SELECT
+?name
+WHERE {
+?name a yago:Company108058098.
+} LIMIT 100
